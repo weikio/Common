@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.SymbolStore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -8,6 +9,7 @@ namespace Weikio.AspNetCore.StartupTasks
 {
     public static class StartupTaskExtensions
     {
+        private static bool _healthChecksAdded = false;
         private static readonly StartupTaskContext _sharedContext = new StartupTaskContext();
 
         public static IServiceCollection AddStartupTask<T>(this IServiceCollection services)
@@ -33,19 +35,20 @@ namespace Weikio.AspNetCore.StartupTasks
                 healthCheckParameters = new StartupTasksHealthCheckParameters();
             }
 
-            services.AddSingleton(healthCheckParameters);
+            services.TryAddSingleton(healthCheckParameters);
             
-            if (healthCheckParameters.IsEnabled)
+            if (healthCheckParameters.IsEnabled && _healthChecksAdded == false)
             {
                 services
                     .AddHealthChecks()
                     .AddCheck<StartupTasksHealthCheck>(healthCheckParameters.HealthCheckName);
+
+                _healthChecksAdded = true;
             }
 
-            services.AddSingleton<IStartupFilter, StartupTasksStartupFilter>();
-
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IStartupFilter, StartupTasksStartupFilter>());
             services.AddHostedService<StartupTaskHostedService>();
-            services.AddSingleton<IStartupTaskQueue, StartupTaskQueue>();
+            services.TryAddSingleton<IStartupTaskQueue, StartupTaskQueue>();
 
             if (!autoRegisterStartupTasks)
             {

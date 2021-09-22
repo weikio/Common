@@ -9,7 +9,7 @@
     <Description>Common .NET Core extensions and functionalities.</Description>
     <PackageDescription>Common .NET Core extensions and functionalities.</PackageDescription>
     <PackageProjectUrl>https://www.weik.io</PackageProjectUrl>
-    <Copyright>©2019 Weik.io</Copyright>
+    <Copyright>©2021 Weik.io</Copyright>
     <PackageId>Weikio.Common</PackageId>
     <Product>Weikio.Common</Product>
     <AssemblyName>Weikio.Common</AssemblyName>
@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MinVer" Version="2.0.0"/>
+    <PackageReference Include="MinVer" Version="2.0.0" PrivateAssets="all"/>
   </ItemGroup>
 
   <ItemGroup>
